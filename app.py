@@ -1,21 +1,10 @@
 import os
+import requests
 from flask import Flask, render_template, request, jsonify, redirect
 from flask_cors import CORS
-import yt_dlp
 
 app = Flask(__name__, template_folder='templates')
 CORS(app)
-
-# Helper options to bypass bot detection on cloud servers
-YDL_BASE_OPTS = {
-    'quiet': True,
-    'no_warnings': True,
-    'extractor_args': {
-        'youtube': {
-            'player_client': ['ios', 'android', 'mweb']
-        }
-    }
-}
 
 @app.route('/')
 def home():
@@ -29,61 +18,52 @@ def get_info():
     if not url:
         return jsonify({'error': 'Please provide a valid URL'}), 400
 
-    ydl_opts = dict(YDL_BASE_OPTS)
-    ydl_opts['skip_download'] = True
+    # Public Cobalt instance capable of extracting Shorts & Videos without cloud IP blocks
+    api_endpoint = "https://api.cobalt.tools/api/json"
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "url": url,
+        "vQuality": "720"
+    }
 
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            
-            formats = []
-            for f in info.get('formats', []):
-                # Only progressive formats (video + audio combined)
-                if f.get('vcodec') != 'none' and f.get('acodec') != 'none':
-                    res = f.get('resolution') or f"{f.get('height', 'unknown')}p"
-                    formats.append({
-                        'format_id': f.get('format_id'),
-                        'ext': f.get('ext'),
-                        'resolution': res
-                    })
+        res = requests.post(api_endpoint, json=payload, headers=headers, timeout=15)
+        res_data = res.json()
 
-            # If no combined formats were isolated, fallback to the best format available
-            if not formats and info.get('url'):
-                formats.append({
-                    'format_id': 'best',
-                    'ext': info.get('ext', 'mp4'),
-                    'resolution': 'Default Quality'
-                })
-
+        # Cobalt directly returns the ready stream/download URL
+        if res.status_code == 200 and 'url' in res_data:
+            stream_url = res_data['url']
             return jsonify({
-                'title': info.get('title', 'Video'),
-                'thumbnail': info.get('thumbnail', ''),
-                'formats': formats
+                'title': 'YouTube Media Ready',
+                'thumbnail': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
+                'formats': [
+                    {
+                        'format_id': 'direct',
+                        'resolution': 'HD Video (MP4)',
+                        'ext': 'mp4',
+                        'download_url': stream_url
+                    }
+                ]
             })
+        else:
+            err_text = res_data.get('text') or 'YouTube blocked the request. Try again shortly.'
+            return jsonify({'error': err_text}), 400
+
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Service temporarily busy. Please try again.'}), 500
 
 @app.route('/api/download', methods=['GET'])
 def download():
-    url = request.args.get('url')
-    format_id = request.args.get('format_id', 'best')
-
-    if not url:
-        return "URL is missing", 400
-
-    ydl_opts = dict(YDL_BASE_OPTS)
-    ydl_opts['format'] = format_id
-
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            stream_url = info.get('url')
-            if stream_url:
-                return redirect(stream_url)
-            return "Stream URL could not be resolved", 404
-    except Exception as e:
-        return str(e), 500
+    # Direct stream passthrough
+    stream_url = request.args.get('target')
+    if stream_url:
+        return redirect(stream_url)
+    return "Download link not found", 404
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+    
