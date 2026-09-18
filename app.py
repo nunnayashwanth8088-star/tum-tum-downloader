@@ -16,14 +16,14 @@ def get_info():
     
     try:
         ydl_opts = {
-    'quiet': True,
-    'no_warnings': True,
-    'extractor_args': {
-        'youtube': {
-            'player_client': ['android', 'web']
-        }
-    }
-        }
+ 'quiet': True,
+ 'no_warnings': True,
+ 'extractor_args': {
+ 'youtube': {
+ 'player_client': ['android', 'web']
+ }
+ }
+ }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             result = ydl.extract_info(url, download=False)
