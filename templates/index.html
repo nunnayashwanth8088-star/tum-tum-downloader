@@ -76,7 +76,7 @@
       fetchBtn.disabled = true;
       fetchBtn.innerHTML = `<span>Fetching...</span>`;
       resultCard.classList.add('hidden');
-      showAlert('Connecting to server...', 'info');
+      showAlert('Fetching video details...', 'info');
 
       try {
         const response = await fetch('/api/get-info', {
@@ -95,24 +95,20 @@
           document.getElementById('videoTitle').innerText = data.title;
 
           formatButtons.innerHTML = '';
-          if (!data.formats || data.formats.length === 0) {
-            formatButtons.innerHTML = `<span class="text-xs text-slate-400">Standard direct stream only.</span>`;
-          } else {
-            data.formats.forEach(f => {
-              const btn = document.createElement('a');
-              btn.href = `/api/download?url=${encodeURIComponent(url)}&format_id=${f.format_id}`;
-              btn.target = "_blank";
-              btn.rel = "noopener noreferrer";
-              btn.className = "flex items-center justify-center p-2.5 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 font-semibold rounded-lg text-xs transition border border-slate-700";
-              btn.innerText = `Download ${f.resolution} (${f.ext})`;
-              formatButtons.appendChild(btn);
-            });
-          }
+          data.formats.forEach(f => {
+            const btn = document.createElement('a');
+            btn.href = f.download_url;
+            btn.target = "_blank";
+            btn.download = "video.mp4";
+            btn.className = "flex items-center justify-center p-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-sm transition";
+            btn.innerText = `Download ${f.resolution}`;
+            formatButtons.appendChild(btn);
+          });
         } else {
           showAlert(data.error || 'Unable to fetch video.', 'error');
         }
       } catch (err) {
-        showAlert('Error contacting backend server.', 'error');
+        showAlert('Server connection error. Please try again.', 'error');
       } finally {
         fetchBtn.disabled = false;
         fetchBtn.innerHTML = `<span>Fetch Media</span>`;
@@ -129,6 +125,7 @@
       }
       alert.innerText = msg;
     }
-  </script>
+    </script>
+  
 </body>
 </html>
