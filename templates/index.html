@@ -1,171 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tum Tum Downloader</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tum Tum Downloader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans">
-
-  <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <span class="text-2xl">⚡</span>
-        <h1 class="text-xl font-black tracking-wide text-amber-400">Tum Tum Downloader</h1>
-      </div>
-      <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full border border-slate-700">v2.0 PRO</span>
-    </div>
-  </header>
-
-  <!-- Main Container -->
-  <main class="flex-grow flex items-center justify-center px-4 py-10">
-    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl">
-      <div class="text-center mb-6">
-        <h2 class="text-2xl font-black text-white tracking-tight">Fast Shorts & Video Saver</h2>
-        <p class="text-xs text-slate-400 mt-1">Paste any YouTube Short or Video link to download instantly.</p>
-      </div>
-
-      <!-- URL Input Area -->
-      <div class="space-y-3">
-        <input 
-          type="text" 
-          id="videoUrl" 
-          placeholder="Paste Shorts or Video link here..." 
-          class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition"
-        />
-        <button 
-          id="fetchBtn" 
-          onclick="processVideo()" 
-          class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-2xl transition duration-150 active:scale-[0.98] text-sm shadow-lg shadow-amber-500/10 flex items-center justify-center space-x-2"
-        >
-          <span>Get Download Options</span>
-        </button>
-      </div>
-
-      <!-- Status Alert -->
-      <div id="statusAlert" class="mt-4 hidden p-3 rounded-xl text-xs font-semibold text-center"></div>
-
-      <!-- Result Card -->
-      <div id="resultCard" class="mt-6 hidden border-t border-slate-800/80 pt-6">
-        <div class="relative rounded-2xl overflow-hidden border border-slate-800 mb-4 bg-black">
-          <img id="thumbImg" src="" alt="Thumbnail" class="w-full aspect-video object-cover" />
-          <div class="absolute bottom-2 left-2 bg-black/70 px-2 py-0.5 rounded text-[10px] text-amber-400 font-bold uppercase tracking-wider">
-            Ready
-          </div>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+    <header class="border-b border-slate-800 bg-slate-900">
+        <div class="max-w-xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">⚡</span>
+                <span class="text-xl font-black tracking-tighter">Tum Tum Downloader</span>
+            </div>
+            <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded">v2.0 PRO</span>
         </div>
+    </header>
 
-        <h3 id="videoTitle" class="text-sm font-bold text-slate-200 line-clamp-2 mb-4"></h3>
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-slate-900 p-8 rounded-2xl shadow-2xl border border-slate-800">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-black text-white mb-2">Fast Shorts & Video Saver</h2>
+                <p class="text-xs text-slate-400">Paste any YouTube Short or Video link to download instantly.</p>
+            </div>
 
-        <!-- Download Buttons Grid -->
-        <div class="space-y-2">
-          <label class="text-[11px] uppercase tracking-wider text-slate-400 font-bold block">Instant Download Servers</label>
-          
-          <a id="server1Btn" href="#" target="_blank" class="w-full flex items-center justify-between p-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs transition shadow-md">
-            <span>📥 Download Server 1 (HD MP4)</span>
-            <span class="text-[10px] bg-black/20 px-2 py-0.5 rounded">Fastest</span>
-          </a>
+            <div class="space-y-4">
+                <input type="text" id="videoUrl"
+                    placeholder="Paste Shorts or Video link here..."
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 placeholder:text-slate-600 focus:outline-none focus:border-amber-500 transition-all">
+                
+                <button id="fetchBtn" onclick="processVideo()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-all flex justify-center items-center">
+                    <span>Get Download Options</span>
+                </button>
+            </div>
 
-          <a id="server2Btn" href="#" target="_blank" class="w-full flex items-center justify-between p-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition border border-slate-700">
-            <span>📥 Download Server 2 (Alternative)</span>
-            <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-300">Backup</span>
-          </a>
+            <div id="statusAlert" class="mt-4 hidden p-4 rounded-xl border"></div>
 
-          <a id="thumbDownloadBtn" href="#" target="_blank" class="w-full flex items-center justify-between p-3 bg-slate-950 hover:bg-slate-800 text-slate-300 font-medium rounded-xl text-xs transition border border-slate-800">
-            <span>🖼️ Download HD Thumbnail</span>
-            <span class="text-[10px] text-slate-500">JPG</span>
-          </a>
+            <div id="resultCard" class="mt-6 hidden border border-slate-800 rounded-2xl overflow-hidden bg-slate-950">
+                <div class="relative rounded-2xl overflow-hidden">
+                    <img id="thumbImg" src="" alt="Thumbnail" class="w-full h-48 object-cover">
+                    <div class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur-md text-xs font-bold px-3 py-1 rounded-lg border border-slate-700">Ready</div>
+                </div>
+
+                <div class="p-5">
+                    <h3 id="videoTitle" class="font-bold text-lg mb-4 line-clamp-2"></h3>
+                    
+                    <div id="downloadServers" class="space-y-3">
+                        <a id="server1Btn" href="" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 flex items-center justify-between transition-all group">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-amber-500 group-hover:scale-110 transition-transform">💾</span>
+                                <span class="font-bold">Download Server 1</span>
+                            </div>
+                            <span class="text-xs font-bold bg-amber-500/10 text-amber-500 px-2 py-1 rounded-lg">Fastest</span>
+                        </a>
+
+                        <a id="server2Btn" href="" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 flex items-center justify-between transition-all group">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-slate-500 group-hover:scale-110 transition-transform">🛠️</span>
+                                <span class="font-bold">Download Server 2 <span class="text-slate-500 font-normal text-xs">(Alternative)</span></span>
+                            </div>
+                            <span class="text-xs font-bold bg-slate-700 text-slate-300 px-2 py-1 rounded-lg">Backup</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </main>
+    </main>
 
-  <!-- Footer -->
-  <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
-    <p>© 2026 Tum Tum Downloader. Free & Fast.</p>
-  </footer>
+    <footer class="border-t border-slate-900 py-6 text-center text-slate-600 text-xs">
+        <p>&copy; 2026 Tum Tum Downloader. Free & Fast.</p>
+    </footer>
 
-  <script>
-    function extractVideoId(url) {
-      if (!url) return null;
-      // Handles shorts, watch, youtu.be, embed URLs
-      const regExp = /(?:youtube\.com\/(?:shorts\/|watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-      const match = url.match(regExp);
-      return match ? match[1] : null;
-    }
-
-    async function processVideo() {
-      const urlInput = document.getElementById('videoUrl');
-      const fetchBtn = document.getElementById('fetchBtn');
-      const statusAlert = document.getElementById('statusAlert');
-      const resultCard = document.getElementById('resultCard');
-
-      const rawUrl = urlInput.value.trim();
-      const videoId = extractVideoId(rawUrl);
-
-      if (!videoId) {
-        showAlert('Please paste a valid YouTube or Shorts link.', 'error');
-        return;
-      }
-
-      fetchBtn.disabled = true;
-      fetchBtn.innerHTML = `<span>Processing Link...</span>`;
-      resultCard.classList.add('hidden');
-      showAlert('Locating media stream...', 'info');
-
-      try {
-        // Fetch public title using YouTube official oEmbed API (no keys required, never blocked)
-        const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
-        const res = await fetch(oembedUrl);
-        
-        let title = "YouTube Short / Video";
-        if (res.ok) {
-          const data = await res.json();
-          title = data.title;
+    <script>
+        function extractVideoId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
         }
 
-        const thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+        async function processVideo() {
+            const urlInput = document.getElementById('videoUrl');
+            const fetchBtn = document.getElementById('fetchBtn');
+            const statusAlert = document.getElementById('statusAlert');
+            const resultCard = document.getElementById('resultCard');
 
-        // Configure Download Servers
-        // Server 1 routes through clean proxy extractor
-        document.getElementById('server1Btn').href = `https://y2mate.nu/en/download?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + videoId)}`;
-        
-        // Server 2 backup routing
-        document.getElementById('server2Btn').href = `https://shortsnoob.com/en?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + videoId)}`;
+            const rawUrl = urlInput.value.trim();
+            const videoId = extractVideoId(rawUrl);
 
-        // HD Thumbnail Direct Link
-        document.getElementById('thumbDownloadBtn').href = thumbUrl;
+            if (!videoId) {
+                showAlert('Please paste a valid YouTube Short or Video URL', 'error');
+                return;
+            }
 
-        // Update UI
-        document.getElementById('thumbImg').src = thumbUrl;
-        document.getElementById('thumbImg').onerror = function() {
-          this.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-        };
-        document.getElementById('videoTitle').innerText = title;
+            fetchBtn.disabled = true;
+            fetchBtn.innerHTML = '<span>Processing Link...</span>';
+            resultCard.classList.add('hidden');
+            statusAlert.classList.add('hidden');
 
-        statusAlert.classList.add('hidden');
-        resultCard.classList.remove('hidden');
+            try {
+                const response = await fetch('/api/get-info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: rawUrl })
+                });
 
-      } catch (err) {
-        showAlert('Unable to process link. Please check your URL.', 'error');
-      } finally {
-        fetchBtn.disabled = false;
-        fetchBtn.innerHTML = `<span>Get Download Options</span>`;
-      }
-    }
+                const data = await response.json();
 
-    function showAlert(msg, type) {
-      const alert = document.getElementById('statusAlert');
-      alert.classList.remove('hidden');
-      if (type === 'error') {
-        alert.className = "mt-4 p-3 rounded-xl text-xs font-medium text-center bg-red-950/60 border border-red-800 text-red-300";
-      } else {
-        alert.className = "mt-4 p-3 rounded-xl text-xs font-medium text-center bg-slate-800 border border-slate-700 text-slate-300";
-      }
-      alert.innerText = msg;
-    }
-  </script>
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to extract video');
+                }
+
+                // Update UI Elements
+                document.getElementById('videoTitle').innerText = data.title;
+                const thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+                document.getElementById('thumbImg').src = thumbUrl;
+
+                // Find highest resolution format (mp4)
+                let bestFormat = data.formats.find(f => f.format_id === '18') || data.formats[0]; 
+                
+                // Set direct download links if available, fallback to standard stream
+                const directUrl = bestFormat.url || rawUrl;
+                document.getElementById('server1Btn').href = directUrl;
+
+                resultCard.classList.remove('hidden');
+
+            } catch (err) {
+                showAlert(err.message, 'error');
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.innerHTML = '<span>Get Download Options</span>';
+            }
+        }
+
+        function showAlert(msg, type) {
+            const alert = document.getElementById('statusAlert');
+            alert.innerText = msg;
+            alert.className = `mt-4 p-4 rounded-xl border ${type === 'error' ? 'bg-red-500/10 border-red-500/50 text-red-500' : 'bg-green-500/10 border-green-500/50 text-green-500'}`;
+            alert.classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
