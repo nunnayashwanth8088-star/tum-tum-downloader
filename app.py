@@ -13,24 +13,25 @@ def get_info():
     url = request.json.get('url')
     if not url:
         return jsonify({'error': 'No URL provided'}), 400
-    
+
     try:
         ydl_opts = {
- 'quiet': True,
- 'no_warnings': True,
- 'extractor_args': {
- 'youtube': {
- 'player_client': ['android', 'web']
- }
- }
- }
-        
+            'quiet': True,
+            'no_warnings': True,
+            'cookiefile': 'cookies.txt.txt',
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web']
+                }
+            }
+        }
+
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             result = ydl.extract_info(url, download=False)
-        return jsonify(result)
+            return jsonify(result)
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
