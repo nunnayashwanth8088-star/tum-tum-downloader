@@ -23,7 +23,7 @@ def get_info():
                 'youtube': {
                     'player_client': ['android', 'web']
                 }
-            }
+            
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
