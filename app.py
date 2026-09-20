@@ -18,8 +18,8 @@ def get_info():
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
-            'cookiefile': 'www.youtube.com_cookies.txt',
-            : {
+            'cookiefile': 'www.youtube.com_cookies.txt'
+            
                 'youtube': {
                     'player_client': ['android', 'web']
                 }
